@@ -50,7 +50,7 @@ def check_balance():
         balance_status['HUOBI']['USDT'] = False
     elif GATEIO_BALANCE['NEO']['free'] / HUOBIPRO_BALANCE['NEO']['total'] <= position:
         balance_status['GATEIO']['NEO'] = False
-    elif elif GATEIO_BALANCE['USDT']['free'] / GATEIO_BALANCE['USDT']['total'] <= position:
+    elif GATEIO_BALANCE['USDT']['free'] / GATEIO_BALANCE['USDT']['total'] <= position:
         balance_status['GATEIO']['USDT'] = False
     else:
         balance_status['HUOBI']['NEO'] = True
@@ -60,6 +60,7 @@ def check_balance():
     return balance_status
 
 #DEPTH CALCULATOR
+#pricelist[n][0] 价格 pricelist[n][1] 数量
 def depth_cal(pricelist, depth):
     n = 0
     market_depth = pricelist[n][0] * pricelist[n][1]
@@ -77,10 +78,10 @@ def depth_cal_all():
     global HUOBI_BID_PRICE_D
     global GATEIO_ASK_PRICE_D
     global GATEIO_BID_PRICE_D
-    HUOBI_ASK_PRICE_D = depth_cal(HUOBIPRO_ORDERBOOK['asks'], MY_DEPTH * 0.2)
-    HUOBI_BID_PRICE_D = depth_cal(HUOBIPRO_ORDERBOOK['bids'], MY_DEPTH * 0.2)
-    GATEIO_ASK_PRICE_D = depth_cal(GATEIO_ORDERBOOK['asks'], MY_DEPTH * 0.2)
-    GATEIO_BID_PRICE_D = depth_cal(GATEIO_ORDERBOOK['bids'], MY_DEPTH * 0.2)
+    HUOBI_ASK_PRICE_D = depth_cal(HUOBIPRO_ORDERBOOK['asks'], MY_DEPTH )
+    HUOBI_BID_PRICE_D = depth_cal(HUOBIPRO_ORDERBOOK['bids'], MY_DEPTH )
+    GATEIO_ASK_PRICE_D = depth_cal(GATEIO_ORDERBOOK['asks'], MY_DEPTH )
+    GATEIO_BID_PRICE_D = depth_cal(GATEIO_ORDERBOOK['bids'], MY_DEPTH )
 
 #SPREAD PROFITABILITY CHECK
 #ENTER BIDPRICE FROM MARKET A, ASKPRICE FROM MARKET B, DEPTH AND FEE, RETURN TRUE OR FALSE
@@ -106,7 +107,7 @@ def check_profit_spread():
 
 #ORDER STATUS CHECK
 #ENTER FETCHORDER, RETURN 'CLOSED', 'UNCLOSE', 'PARTIALLY CLOSED' OR 'CANNOT FIND THIS ORDER'
-
+#似乎有一个fetch open order， fetch closed order的功能
 def check_order_status(market, order_id):
     order_status = {}
     order_status['market'] = market
@@ -138,6 +139,13 @@ def check_buyback_loss(status):
 #ESTIMATED BALANCE CALCULATOR
 def est_balance():
     pass
+#直接fetch balance
+def fetch_balance():
+    balance['huobiNEO'] = huobipro.fecth_balance("NEO")
+    balance['gateioNEO'] = gateio.fetch_balance("NEO")
+    balance['huobiUSDT'] = huobipro.fecth_balance("USDT")
+    balance['gateioUSDT'] = gateio.fetch_balance("USDT")
+    return balance
 
 #STORE STARTING DATA(TICKER, BALANCE)
 def store_starting_data():
@@ -161,4 +169,8 @@ def buyback_prot():
 
 #TRANSFER PROTOCOL
 def transfer_prot():
-    pass
+    if balance["huobiNEO"] = MY_DEPTH or balance["huobiUSDT"] = MY_DEPTH or balance["gateioUSDT"] = MY_DEPTH or balance["gateioNEO"] = MY_DEPTH:
+        needtransfer = "yes"
+    else:
+        needtransfer = "no"
+    print needtransfer
